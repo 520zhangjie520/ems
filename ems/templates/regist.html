@@ -1,0 +1,162 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% block content  %}
+    <title>regist</title>
+    <script src="/static/ajax_test/JS/jquery-3.3.1.min.js"></script>
+    <script>
+        function changeCaptcha() {
+            var img = $('#capimg')[0];
+            var img_url = "{% url 'getcaptcha' %}?"+new Date().getTime();
+            img.src = img_url;
+            console.log(img);
+            console.log(img_url)
+        }
+        //======用户名重复判断=======
+
+        $(function () {
+         $('#in').attr('src','/static/ajax_test/image/5-121204193934-50.gif');
+            $('#name').blur(function () {
+                $.ajax({
+                    type:'post',
+                    url:{% url 'checkname' %},
+                    data:'name='+$('#name').val()+"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+                    success:function (msg) {
+                        if (msg === '1') {
+                            $('#in').attr('src', '/static/ajax_test/image/error_3.jpg')
+                        } else if (msg === '0') {
+                            $('#in').attr('src', '/static/ajax_test/image/right_3.jpg')
+                        }
+                    }
+                })
+            });
+            $('#cap').blur(function () {
+                $.ajax({
+                    type:'post',
+                    url:{% url 'checkcaptcha' %},
+                    data:'cap='+$('#cap').val()+"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+                    success:function (t) {
+
+                        if (t=== '0') {
+                            $('#an').attr('src', '/static/ajax_test/image/error_3.jpg')
+                        } else if (t === '1') {
+                            $('#an').attr('src', '/static/ajax_test/image/right_3.jpg')
+                        }
+                    }
+                })
+            });
+              $('#reg').click(function () {
+            $.ajax({
+                type:"post",
+                url:'{% url 'regist1' %}',
+                data:'name='+$('#name').val()+'&password='+$('#p').val()+'&username='+$('#username').val()+'&sex='+$('#f').val()+'&sex='+$('#m').val()+'&cap='+$('#cap').val() +"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+                success:function (msg) {
+                    console.log(msg)
+                    if(msg==='1'){
+                        location.href={% url 'login' %}
+                    }else {
+                        alert('您的密码或者验证码有误。')
+                    }
+                }
+            })
+        })
+
+
+        });
+
+
+
+    </script>
+{% endblock %}
+{% block ab  %}
+    <form action=" {% url 'regist1' %} " method="post" >
+        {% csrf_token  %}
+        <div id="wrap">
+            <div id="top_content">
+                <div id="header">
+                    <div id="rightheader">
+                        <p id="times">
+
+                            <br />
+                        </p>
+                    </div>
+                    <div id="topheader">
+                        <h1 id="title">
+                            <a href="#">main</a>
+                        </h1>
+                    </div>
+                    <div id="navigation">
+                    </div>
+                </div>
+                <div id="content">
+                    <p id="whereami">
+                    </p>
+                    <h1>
+                        注册
+                    </h1>
+                    <form action="login.html" method="post">
+                        <table cellpadding="0" cellspacing="0" border="0"
+                               class="form_table">
+                            <tr>
+                                <td valign="middle" align="right">
+                                    用户名:
+                                </td>
+                                <td valign="middle" align="left">
+                                    <input type="text" class="inputgri" name="username"  id="name"/>
+<img src="" alt="" id="in" width="20px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td valign="middle" align="right">
+                                    真实姓名:
+                                </td>
+                                <td valign="middle" align="left">
+                                    <input type="text" class="inputgri" name="name" id="username" />
+                                    <img src="" alt="" id="in" width="20px">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td valign="middle" align="right">
+                                    密码:
+                                </td>
+                                <td valign="middle" align="left">
+                                    <input type="password" class="inputgri" name="password" id="p"/>
+                                    <img src="" alt="" id="in" width="20px">
+                                    <span id="sp"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td valign="middle" align="right">
+                                    性别:
+                                </td>
+                                <td valign="middle" align="left">
+                                    男
+                                    <input type="radio" class="inputgri" name="sex" value="m" checked="checked" id="m"/>
+                                    女
+                                    <input type="radio" class="inputgri" name="sex" value="f" id="f"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td valign="middle" align="right">
+                                    <span id="y">请输入验证码</span>
+                                    <input type="text" name="captcha" id="cap"> <img src="{% url "getcaptcha" %}" alt="" width="80px" id="capimg">
+                                    <a href="javascript:void(0)" onclick="changeCaptcha()">看不清，换一张</a>
+                                    <span><img src="/static/ajax_test/image/5-121204193934-50.gif" alt="" id="an" width="20px"></span>
+                            </tr>
+                        </table>
+                        <p>
+                            <input type="button" class="button" value="Submit"  id="reg" />
+                        </p>
+                    </form>
+                </div>
+            </div>
+            <div id="footer">
+                <div id="footer_bg">
+                    ABC@126.com
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

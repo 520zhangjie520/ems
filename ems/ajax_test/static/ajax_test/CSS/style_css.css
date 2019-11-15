@@ -1,0 +1,21 @@
+div,form,a,span{
+    margin: 0 auto;
+    padding: 0;
+    text-decoration-color:gold ;
+}
+#box{
+    background-image: url("../image/1564243710536.jpg");
+    width: 600px;
+    height: 400px;
+    line-height: 50px;
+    color: wheat;
+    background-size: 600px 400px;
+}
+a{
+    color: wheat;
+}
+#reg{
+    background-color: wheat;
+    font-weight: bold;
+    color:green ;
+}

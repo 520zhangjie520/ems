@@ -1,0 +1,97 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% block content  %}
+<title>login</title>
+    <script src="{% static '/jquery-3.3.1.min.js' %}"></script>
+    <script>
+           $( function () {
+        $('#submit').click(function () {
+            console.log($('#submit').val())
+            $.ajax({
+               type:"post",
+                url:'{% url 'login1' %}',
+               data:'name='+$('#name').val()+'&password='+$('#password').val() +"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+               success:function (msg) {
+                   console.log(msg)
+                   if(msg=='0'){
+                       alert('您的密码或者账号有误。')
+
+                   }else {
+                       location.href={% url 'home' %}
+                   }
+
+
+
+               }
+            })
+        })
+           })
+
+    </script>
+{% endblock %}
+
+
+	{% block ab  %}
+    <form action=" {% url 'login1' %}" method="post" >
+    {% csrf_token  %}
+		<div id="wrap">
+			<div id="top_content">
+					<div id="header">
+						<div id="rightheader">
+							<p id="times">
+
+								<br />
+							</p>
+						</div>
+						<div id="topheader">
+							<h1 id="title">
+								<a href="#">main</a>
+							</h1>
+						</div>
+						<div id="navigation">
+						</div>
+					</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						login
+					</h1>
+{#					<form action="emplist.html" method="post">#}
+						<table cellpadding="0" cellspacing="0" border="0"
+							class="form_table">
+							<tr>
+								<td valign="middle" align="right">
+									username:
+								</td>
+								<td valign="middle" align="left">
+									<input type="text" class="inputgri" name="username" id="name"/>
+								</td>
+							</tr>
+							<tr>
+								<td valign="middle" align="right">
+									password:
+								</td>
+								<td valign="middle" align="left">
+									<input type="password" class="inputgri" name="password" id="password"/>
+								</td>
+							</tr>
+                             <tr>
+            <th align="center" > <input type="checkbox" value="1" name="remember"  id="remember" ><span style="color: aquamarine " >记住我</span></th>
+
+        </tr>
+						</table>
+						<p>
+							<input type="button" class="button" value="Submit &raquo;" id="submit" />
+						</p>
+					</form>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+					ABC@126.com
+				</div>
+			</div>
+		</div>
+         </form>
+{% endblock %}

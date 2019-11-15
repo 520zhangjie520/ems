@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+    {% load static %}
+    <script src="{% static '/jquery-3.3.1.min.js' %}"></script>
+    <script>
+    $( function () {
+        $('#input_text').keyup(function () {
+            console.log($('#input_text').val())
+            $.ajax({
+               type:"post",
+                url:'{% url 'ajax:query' %}',
+               data:'name='+$('#input_text').val()+"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+               success:function (msg) {
+                   var array = msg['users']
+                    var str="            <tr>\n" +
+                        "                <td>编号</td>\n" +
+                        "                <td>姓名</td>\n" +
+                        "                <td>年龄</td>\n" +
+                        "                <td>薪水</td>\n" +
+                        "                <td>生日</td>\n" +
+                        "            </tr>"
+                    for(var i=0;i<array.length;i++){
+                        var user = array[i]
+                        var id = user['id']
+                        var name = user['name']
+                        var age = user['age']
+                        var salary = user['salary']
+                        var birthday = user['birthday']
+                        str += "<tr>"
+                        str += "<td>" + id + "</td>"
+                        str += "<td>" + name + "</td>"
+                        str += "<td>" + age + "</td>"
+                        str += "<td>" + salary + "</td>"
+                        str += "<td>" + birthday + "</td>"
+                        str += "</tr>"}
+
+                    document.getElementsByTagName("table")[0].innerHTML = str
+               },
+
+           })
+        })
+
+        $('#button').click(function () {
+            $.ajax({
+               type:"post",
+                url:'{% url 'ajax:query' %}',
+               data:'name='+$('#input_text').val()+"&csrfmiddlewaretoken="+"{{ csrf_token }}",
+               success:function (msg) {
+                   var array = msg['users']
+                    var str="            <tr>\n" +
+                        "                <td>编号</td>\n" +
+                        "                <td>姓名</td>\n" +
+                        "                <td>年龄</td>\n" +
+                        "                <td>薪水</td>\n" +
+                        "                <td>生日</td>\n" +
+                        "            </tr>"
+                    for(var i=0;i<array.length;i++){
+                        var user = array[i]
+                        var id = user['id']
+                        var name = user['name']
+                        var age = user['age']
+                        var salary = user['salary']
+                        var birthday = user['birthday']
+                        str += "<tr>"
+                        str += "<td>" + id + "</td>"
+                        str += "<td>" + name + "</td>"
+                        str += "<td>" + age + "</td>"
+                        str += "<td>" + salary + "</td>"
+                        str += "<td>" + birthday + "</td>"
+                        str += "</tr>"}
+
+                    document.getElementsByTagName("table")[0].innerHTML = str
+               },
+
+           })
+        })
+
+
+
+
+
+
+
+
+
+    })
+    </script>
+
+</head>
+<body>
+        <input type="text" id="input_text">
+        <button onclick="query()" id="button">查询</button>
+        <table border="1" cellspacing="0">
+        </table>
+
+</body>
+</html>

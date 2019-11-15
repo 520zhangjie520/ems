@@ -1,0 +1,134 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% block content  %}
+		<title>emplist</title>
+
+        <style>
+    .a{
+        width:20px;
+        height: 20px;
+        border:1px solid #e1e2e3;
+        cursor:pointer;
+        display: inline-block;
+        text-align: center;
+        line-height: 20px;
+        color: blue;
+    }
+    .b{
+        border:0;
+        width:20px;
+        height: 20px;
+        cursor:pointer;
+        display: inline-block;
+        text-align: center;
+        line-height: 20px;
+        color: red;
+    }
+    a{
+        text-decoration:none;
+    }
+</style>
+    <script>
+    function del() {
+        {% for u in page  %}
+        if(window.confirm('您确认删除吗') ){
+            {#window.location.href="{% url 'del1' %}?id={{ u.id }}"#}
+            a=document.getElementById('id')
+            return a
+        }else{
+            window.location.href='{% url 'home' %}'
+        }
+        {% endfor %}
+    }
+    </script>
+
+{% endblock %}
+
+{% block ab %}
+    <form action=" {% url 'home1' %}" method="post" >
+    {% csrf_token  %}
+		<div id="wrap">
+			<div id="top_content"> 
+				<div id="header">
+					<div id="rightheader">
+						<p id="times">
+
+						</p>
+					</div>
+					<div id="topheader">
+						<h1 id="title">
+							<a href="#">main</a>
+						</h1>
+					</div>
+					<div id="navigation">
+					</div>
+				</div>
+				<div id="content">
+					<p id="whereami">
+					</p>
+					<h1>
+						Welcome!
+					</h1>
+					<table class="table" border="1"  >
+						<tr class="table_header">
+							<td>ID</td>
+                            <td>头像</td>
+							<td>Name</td>
+							<td>Salary</td>
+							<td>Age</td>
+							<td>Operation</td>
+						</tr>
+
+                         {% for u in page  %}
+
+                              {% if forloop.counter|divisibleby:2 %}
+            <tr align="center" style="background-color: red">
+        {% else %}
+             <tr align="center">
+                            {% endif %}
+                            <td>{{u.id     }}</td>
+                             <td>
+                                <img src="{% static u.headpic.url    %}" alt="" width="100px">
+                             </td>
+                            <td>{{ u.name  }}</td>
+                            <td>{{ u.salary }}</td>
+                            <td>{{ u.age  }}</td>
+                            <td><a href="{% url 'del1' %}?id={{ u.id }}&num={{ page.number   }}" id="del" onclick="del()" >delete emp</a>&nbsp;
+
+                                <a  href="{% url 'update' %}?id={{ u.id }}&num= {{ page.number }}" >update emp</a></td>
+                            </tr>
+                            {% endfor %}
+					</table>
+<p>
+							<input type="submit" class="button" value="Submit &raquo;" />
+
+        {% if page.has_previous   %}
+            <a href="{% url 'home' %}?number={{ page.previous_page_number }}">上一页</a>
+        {% endif %}
+    {% for n in page.paginator.page_range   %}
+     <a href="{% url 'home' %}?number={{ n }}">
+        {% if page.number == n %}
+            <span class="b">{{ n }}</span>
+        {% else %}
+            <span class="a">{{ n }}</span>
+        {% endif %}
+
+         </a>
+    {% endfor %}
+
+{% if page.has_next %}
+<a href="{% url 'home' %}?number={{ page.next_page_number }}">下一页</a>
+{% endif %}
+						</p>
+				</div>
+			</div>
+			<div id="footer">
+				<div id="footer_bg">
+				ABC@126.com
+				</div>
+			</div>
+		</div>
+
+
+    </form>
+{% endblock %}

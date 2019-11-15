@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+         <link rel="stylesheet" href="/static/style.css">
+ <script>
+            setInterval(function () {
+                var times=document.getElementById("times");
+                // 获取当前时间
+                var a=new Date();
+                var year=a.getFullYear();
+                var month=a.getMonth()+1;
+                var date=a.getDate();
+                var hours=a.getHours();
+                var minutes=a.getMinutes();
+                var seconds=a.getSeconds();
+                times.innerText=(year+"年"+month+"月"+date+"日"+hours+"时"+minutes+"分"+seconds+"秒");
+            },1000);
+        </script>
+    {% block content %}
+    
+    {% endblock %}
+</head>
+<body>
+{% block ab %}
+
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,145 @@
+{%  extends 'base.html' %}
+    {% load static %}
+{% block content  %}
+    <title>注册页面</title>
+    <script src="/static/ajax_test/JS/jquery-3.3.1.min.js"></script>
+{#    <script src="/static/ajax_test/JS/ajax_test_js.js"></script>#}
+    <script>
+    $(function () {
+        var xhr
+        if (window.ActiveXObject){
+            xhr=new ActiveXObject('Microsoft.XMLHTTP')
+        } else if (window.XMLHttpRequest){
+            xhr=new XMLHttpRequest()
+        }
+        //======用户名重复判断=======
+        var t=0
+        $('#name').blur(function () {
+            $('#user').hide()
+            console.log('in来了')
+            var url='{% url "ajaxtest:checkname" %}'
+            xhr.open('POST',url,true)
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}')
+            console.log($('#name').val())
+            xhr.send('name='+$('#name ').val())
+            $('#in').attr('src','/static/ajax_test/image/5-121204193934-50.gif')
+            xhr.onreadystatechange=function () {
+                console.log(xhr.readyState)
+                if (xhr.readyState===4 && xhr.status===200){
+                    t=xhr.responseText
+                    {#console.log(typeof t)#}
+                    if (t==='0'){
+                        $('#in').attr('src','/static/ajax_test/image/error_3.jpg')
+                    }else if (t==='1'){
+                        $('#in').attr('src','/static/ajax_test/image/right_3.jpg')
+                }
+                }
+
+            }
+        })
+        //========密码不一致判断=========
+        var ps=0
+        $('#cp').blur(function () {
+            console.log($('#p').val(),$('#cp').val())
+            if ($('#p').val() === $('#cp').val()){
+                $('#spc').css('color','green')
+                $('#spc').html('确认密码')
+                ps=1
+            }else {
+                $('#spc').css('color','red')
+                $('#spc').html('！两次密码不一致')
+            }
+        })
+        //======验证码判断======
+        var text=0
+        $('#cap').blur(function () {
+            $('#y').hide()
+            var url='{% url "ajaxtest:checkcaptcha" %}'
+            xhr.open('post',url,true)
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded")
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}')
+            xhr.send('cap='+$('#cap').val())
+            console.log('执行了')
+            $('#capimg').attr('src','/static/ajax_test/image/5-121204193934-50.gif')
+            xhr.onreadystatechange=function () {
+                if (xhr.readyState===4 && xhr.status===200){
+                    text=xhr.responseText
+                }
+                if (text==='0'){
+                     $('#capimg').attr('src','/static/ajax_test/image/error_3.jpg')
+                }else if (text==='1'){
+                     $('#capimg').attr('src','/static/ajax_test/image/right_3.jpg')
+                }
+            }
+        })
+        $('#reg').click(function () {
+
+            console.log(t,ps,text)
+            if (t==='1' && ps===1 && text==='1'){
+               document.forms[0].submit()
+            }
+        })
+       })
+
+    </script>
+{% endblock %}
+
+	{% block ab  %}
+<div id="box" align="middle" >
+<form action=" {% url 'regist1' %} "  method="post">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td align="right">
+                用户名:
+            </td>
+            <td align="left">
+                <input type="text" name="name" id="name">
+                <span id="u">请输入用户名</span>
+                <img src="#" alt="" id="in" width="20px" align="middle">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                密 &nbsp;&nbsp;码:
+            </td>
+            <td align="left">
+                <input type="password" name="password" id="p">
+                <span id="sp"></span>
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                确认密码:
+            </td>
+            <td align="left">
+                <input type="password" name="checkpassword" id="cp">
+                <span id="spc">确认密码</span>
+            </td>
+        </tr>
+         <tr>
+            <td align="right">
+               验证码:
+            </td>
+            <td align="left">
+                <input type="text" name="captcha" id="cap">
+                <span id="y">请输入验证码</span>
+                <img src="#" alt="" id="capimg" width="20px" align="middle">
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left">
+                <img src="{% url 'ajaxtest:getcaptcha' %}" alt="" id="img" width="120px" height="30px" align="middle">
+                <a href="Javascript:void(0)" onclick="document.getElementById('img').src='{% url "ajaxtest:getcaptcha" %}?'+new Date().getTime()">换一个</a>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="button" value="regist" id="reg"></td>
+        </tr>
+    </table>
+</form>
+</div>
+{% endblock %}
